@@ -11,6 +11,7 @@
 		A10000000000000000000002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* PrivacyInfo.xcprivacy */; };
 		A10000000000000000000003 /* MAXApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* MAXApp.swift */; };
 		A10000000000000000000004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000005 /* ContentView.swift */; };
+		A10000000000000000000005 /* NearbySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* NearbySession.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		B10000000000000000000003 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B10000000000000000000004 /* MAXApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAXApp.swift; sourceTree = "<group>"; };
 		B10000000000000000000005 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B10000000000000000000006 /* NearbySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbySession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +47,7 @@
 			children = (
 				B10000000000000000000004 /* MAXApp.swift */,
 				B10000000000000000000005 /* ContentView.swift */,
+				B10000000000000000000006 /* NearbySession.swift */,
 				B10000000000000000000002 /* Assets.xcassets */,
 				B10000000000000000000003 /* PrivacyInfo.xcprivacy */,
 			);
@@ -134,6 +137,7 @@
 			files = (
 				A10000000000000000000003 /* MAXApp.swift in Sources */,
 				A10000000000000000000004 /* ContentView.swift in Sources */,
+				A10000000000000000000005 /* NearbySession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +266,10 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = MAX;
+				INFOPLIST_KEY_NSBonjourServices = (
+					"_max-ptt._tcp",
+				);
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MAX uses your local network to find and connect to nearby MAX devices.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				MARKETING_VERSION = 0.1.0;
@@ -285,6 +293,10 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = MAX;
+				INFOPLIST_KEY_NSBonjourServices = (
+					"_max-ptt._tcp",
+				);
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MAX uses your local network to find and connect to nearby MAX devices.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				MARKETING_VERSION = 0.1.0;
