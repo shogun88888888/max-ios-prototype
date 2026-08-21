@@ -58,12 +58,24 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
-                    Button("Hold to Talk") {}
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .disabled(true)
+                    Text(nearby.isTalking ? "Talking…" : "Hold to Talk")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(nearby.isTalking ? Color.red : Color.accentColor, in: Capsule())
+                        .opacity(nearby.connectedPeerNames.isEmpty ? 0.5 : 1)
+                        .onLongPressGesture(minimumDuration: 0, maximumDistance: 60, pressing: { isPressing in
+                            if isPressing {
+                                nearby.beginTalking()
+                            } else {
+                                nearby.endTalking()
+                            }
+                        }, perform: {})
+                        .accessibilityLabel(nearby.isTalking ? "Talking" : "Hold to Talk")
+                        .accessibilityHint("Hold while speaking to send live audio to nearby connected devices.")
 
-                    Text("Nearby connection is this checkpoint. Live microphone relay is next.")
+                    Text("Live audio is sent only while you hold the button. Nothing is recorded or uploaded.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)

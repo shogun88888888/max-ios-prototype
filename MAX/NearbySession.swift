@@ -10,6 +10,7 @@ final class NearbySession: NSObject, ObservableObject {
     @Published private(set) var connectionStatus = "Nearby sharing is off"
     @Published private(set) var discoveredPeerNames: [String] = []
     @Published private(set) var connectedPeerNames: [String] = []
+    @Published private(set) var isTalking = false
     @Published var errorMessage: String?
 
     private let peerID: MCPeerID
@@ -17,6 +18,14 @@ final class NearbySession: NSObject, ObservableObject {
     private var advertiser: MCNearbyServiceAdvertiser!
     private var browser: MCNearbyServiceBrowser!
     private var discoveredPeers: [String: MCPeerID] = [:]
+    private var isTalkRequested = false
+    private lazy var audioRelay: AudioRelay = {
+        let relay = AudioRelay()
+        relay.onAudioData = { [weak self] data in
+            self?.sendAudio(data)
+        }
+        return relay
+    }()
 
     override init() {
         let displayName = String(UIDevice.current.name.prefix(30))
@@ -58,6 +67,47 @@ final class NearbySession: NSObject, ObservableObject {
 
         connectionStatus = "Inviting \(peerName)"
         browser.invitePeer(peer, to: session, withContext: nil, timeout: 20)
+    }
+
+    func beginTalking() {
+        guard !isTalking else { return }
+        guard !session.connectedPeers.isEmpty else {
+            errorMessage = "Connect to a nearby MAX device before using push-to-talk."
+            return
+        }
+
+        isTalkRequested = true
+
+        Task {
+            do {
+                try await audioRelay.beginTransmitting()
+                guard isTalkRequested else {
+                    audioRelay.stopTransmitting()
+                    return
+                }
+                isTalking = true
+            } catch {
+                isTalkRequested = false
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    func endTalking() {
+        isTalkRequested = false
+        audioRelay.stopTransmitting()
+        isTalking = false
+    }
+
+    private func sendAudio(_ data: Data) {
+        let peers = session.connectedPeers
+        guard !peers.isEmpty else { return }
+
+        do {
+            try session.send(data, toPeers: peers, with: .unreliable)
+        } catch {
+            errorMessage = "MAX could not send live audio: \(error.localizedDescription)"
+        }
     }
 
     private func refreshConnectedPeers() {
@@ -104,7 +154,11 @@ extension NearbySession: MCSessionDelegate {
         }
     }
 
-    nonisolated func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {}
+    nonisolated func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        Task { @MainActor [weak self] in
+            self?.audioRelay.receive(data)
+        }
+    }
 
     nonisolated func session(
         _ session: MCSession,
