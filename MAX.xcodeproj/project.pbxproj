@@ -9,12 +9,20 @@
 /* Begin PBXBuildFile section */
 		A10000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* Assets.xcassets */; };
 		A10000000000000000000002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* PrivacyInfo.xcprivacy */; };
+		A10000000000000000000003 /* MAXApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* MAXApp.swift */; };
+		A10000000000000000000004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000005 /* ContentView.swift */; };
+		A10000000000000000000005 /* NearbySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* NearbySession.swift */; };
+		A10000000000000000000006 /* AudioRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* AudioRelay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B10000000000000000000001 /* MAX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MAX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B10000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10000000000000000000003 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B10000000000000000000004 /* MAXApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAXApp.swift; sourceTree = "<group>"; };
+		B10000000000000000000005 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B10000000000000000000006 /* NearbySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbySession.swift; sourceTree = "<group>"; };
+		B10000000000000000000007 /* AudioRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRelay.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +47,10 @@
 		C10000000000000000000002 /* MAX */ = {
 			isa = PBXGroup;
 			children = (
+				B10000000000000000000004 /* MAXApp.swift */,
+				B10000000000000000000005 /* ContentView.swift */,
+				B10000000000000000000006 /* NearbySession.swift */,
+				B10000000000000000000007 /* AudioRelay.swift */,
 				B10000000000000000000002 /* Assets.xcassets */,
 				B10000000000000000000003 /* PrivacyInfo.xcprivacy */,
 			);
@@ -126,6 +138,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000000000000000000003 /* MAXApp.swift in Sources */,
+				A10000000000000000000004 /* ContentView.swift in Sources */,
+				A10000000000000000000005 /* NearbySession.swift in Sources */,
+				A10000000000000000000006 /* AudioRelay.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,9 +266,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 24C3NFYWQ9;
 				DEVELOPMENT_ASSET_PATHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = MAX;
+				INFOPLIST_KEY_NSBonjourServices = (
+					"_max-ptt._tcp",
+				);
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MAX uses your local network to find and connect to nearby MAX devices.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "MAX uses the microphone only while you hold Talk to send live audio to a connected nearby device.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				MARKETING_VERSION = 0.1.0;
@@ -272,9 +294,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 24C3NFYWQ9;
 				DEVELOPMENT_ASSET_PATHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = MAX;
+				INFOPLIST_KEY_NSBonjourServices = (
+					"_max-ptt._tcp",
+				);
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "MAX uses your local network to find and connect to nearby MAX devices.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "MAX uses the microphone only while you hold Talk to send live audio to a connected nearby device.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				MARKETING_VERSION = 0.1.0;
