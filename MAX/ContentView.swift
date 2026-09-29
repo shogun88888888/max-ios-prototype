@@ -15,7 +15,7 @@ struct ContentView: View {
                         Text("MAX")
                             .font(.largeTitle.bold())
 
-                        Text("Nearby push-to-talk prototype")
+                        Text("Nearby push-to-talk")
                             .font(.headline)
                             .foregroundStyle(.secondary)
                     }
@@ -25,7 +25,7 @@ struct ContentView: View {
                             .font(.headline)
                             .foregroundStyle(nearby.connectedPeerNames.isEmpty ? Color.primary : Color.green)
 
-                        Text("Discovery runs only while this app is open in the foreground. No account or cloud service is used.")
+                        Text("Discovery runs only while MAX is open in the foreground. No account or cloud service is used.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -73,7 +73,13 @@ struct ContentView: View {
                             }
                         }, perform: {})
                         .accessibilityLabel(nearby.isTalking ? "Talking" : "Hold to Talk")
-                        .accessibilityHint("Hold while speaking to send live audio to nearby connected devices.")
+                        .accessibilityHint(
+                            nearby.connectedPeerNames.isEmpty
+                                ? "Connect to a nearby MAX device before using push-to-talk."
+                                : "Hold while speaking to send live audio to nearby connected devices."
+                        )
+                        .accessibilityAddTraits(.isButton)
+                        .allowsHitTesting(!nearby.connectedPeerNames.isEmpty)
 
                     Text("Live audio is sent only while you hold the button. Nothing is recorded or uploaded.")
                         .font(.footnote)
@@ -91,6 +97,19 @@ struct ContentView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(nearby.errorMessage ?? "")
+        }
+        .alert("Nearby connection request", isPresented: Binding(
+            get: { nearby.incomingInvitationPeerName != nil },
+            set: { if !$0 { nearby.declineIncomingInvitation() } }
+        )) {
+            Button("Decline", role: .cancel) {
+                nearby.declineIncomingInvitation()
+            }
+            Button("Connect") {
+                nearby.acceptIncomingInvitation()
+            }
+        } message: {
+            Text("Allow \(nearby.incomingInvitationPeerName ?? "this device") to connect for nearby push-to-talk?")
         }
     }
 }

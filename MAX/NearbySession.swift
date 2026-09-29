@@ -4,6 +4,47 @@ import UIKit
 
 @MainActor
 final class NearbySession: NSObject, ObservableObject {
+    private final class InvitationResponse: @unchecked Sendable {
+        private let lock = NSLock()
+        private var handler: ((Bool, MCSession?) -> Void)?
+
+        init(handler: @escaping (Bool, MCSession?) -> Void) {
+            self.handler = handler
+        }
+
+        func respond(accepting: Bool, session: MCSession?) {
+            lock.lock()
+            let handler = self.handler
+            self.handler = nil
+            lock.unlock()
+
+            handler?(accepting, session)
+        }
+    }
+
+    private final class InvitationStore: @unchecked Sendable {
+        private let lock = NSLock()
+        private var pending: InvitationResponse?
+
+        func replace(with response: InvitationResponse) -> InvitationResponse? {
+            lock.lock()
+            defer { lock.unlock() }
+
+            let previous = pending
+            pending = response
+            return previous
+        }
+
+        func take() -> InvitationResponse? {
+            lock.lock()
+            defer { lock.unlock() }
+
+            let response = pending
+            pending = nil
+            return response
+        }
+    }
+
     private static let serviceType = "max-ptt"
 
     @Published private(set) var isDiscovering = false
@@ -11,6 +52,7 @@ final class NearbySession: NSObject, ObservableObject {
     @Published private(set) var discoveredPeerNames: [String] = []
     @Published private(set) var connectedPeerNames: [String] = []
     @Published private(set) var isTalking = false
+    @Published private(set) var incomingInvitationPeerName: String?
     @Published var errorMessage: String?
 
     private let peerID: MCPeerID
@@ -18,6 +60,7 @@ final class NearbySession: NSObject, ObservableObject {
     private var advertiser: MCNearbyServiceAdvertiser!
     private var browser: MCNearbyServiceBrowser!
     private var discoveredPeers: [String: MCPeerID] = [:]
+    private nonisolated let invitationStore = InvitationStore()
     private var isTalkRequested = false
     private lazy var audioRelay: AudioRelay = {
         let relay = AudioRelay()
@@ -99,6 +142,24 @@ final class NearbySession: NSObject, ObservableObject {
         isTalking = false
     }
 
+    func acceptIncomingInvitation() {
+        guard let incomingInvitation = invitationStore.take() else { return }
+
+        incomingInvitationPeerName = nil
+        incomingInvitation.respond(accepting: true, session: session)
+    }
+
+    func declineIncomingInvitation() {
+        guard let incomingInvitation = invitationStore.take() else { return }
+
+        incomingInvitationPeerName = nil
+        incomingInvitation.respond(accepting: false, session: nil)
+    }
+
+    private func receiveInvitation(from peerName: String) {
+        incomingInvitationPeerName = peerName
+    }
+
     private func sendAudio(_ data: Data) {
         let peers = session.connectedPeers
         guard !peers.isEmpty else { return }
@@ -143,7 +204,13 @@ extension NearbySession: MCNearbyServiceAdvertiserDelegate {
         withContext context: Data?,
         invitationHandler: @escaping (Bool, MCSession?) -> Void
     ) {
-        invitationHandler(true, session)
+        let response = InvitationResponse(handler: invitationHandler)
+        invitationStore.replace(with: response)?.respond(accepting: false, session: nil)
+        let peerName = peerID.displayName
+
+        Task { @MainActor [weak self] in
+            self?.receiveInvitation(from: peerName)
+        }
     }
 }
 
